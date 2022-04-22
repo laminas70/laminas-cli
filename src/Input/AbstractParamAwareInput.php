@@ -54,8 +54,10 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
     /**
      * Define this method in order to modify the question, if needed, before
      * prompting for an answer.
+     * @param \Symfony\Component\Console\Question\Question $question
+     * @return void
      */
-    abstract protected function modifyQuestion(Question $question): void;
+    abstract protected function modifyQuestion($question);
 
     /**
      * @return mixed
@@ -63,8 +65,9 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
      * @throws InvalidArgumentException When the parameter is of an invalid type.
      * @throws InvalidArgumentException When the parameter is required, input is
      *     non-interactive, and no value is provided.
+     * @param string $name
      */
-    final public function getParam(string $name)
+    final public function getParam($name)
     {
         if (! isset($this->params[$name])) {
             throw new InvalidArgumentException(sprintf('Invalid parameter name: %s', $name));
@@ -118,17 +121,27 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
         return $value;
     }
 
-    public function getFirstArgument(): ?string
+    /**
+     * @return string|null
+     */
+    public function getFirstArgument()
     {
         return $this->input->getFirstArgument();
     }
 
-    public function bind(InputDefinition $definition): void
+    /**
+     * @param \Symfony\Component\Console\Input\InputDefinition $definition
+     * @return void
+     */
+    public function bind($definition)
     {
         $this->input->bind($definition);
     }
 
-    public function validate(): void
+    /**
+     * @return void
+     */
+    public function validate()
     {
         $this->input->validate();
     }
@@ -141,7 +154,10 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
         return $this->input->getArguments();
     }
 
-    public function hasArgument(string $name): bool
+    /**
+     * @param string $name
+     */
+    public function hasArgument($name): bool
     {
         return $this->input->hasArgument($name);
     }
@@ -162,8 +178,9 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
 
     /**
      * @param resource $stream
+     * @return void
      */
-    public function setStream($stream): void
+    public function setStream($stream)
     {
         if (! $this->input instanceof StreamableInputInterface) {
             return;
@@ -199,8 +216,9 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
     /**
      * @param mixed $value
      * @return mixed
+     * @param callable|null $normalizer
      */
-    private function normalizeValue($value, ?callable $normalizer)
+    private function normalizeValue($value, $normalizer)
     {
         // No normalizer: nothing to do
         if ($normalizer === null) {
@@ -220,13 +238,15 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
      * @param mixed $value
      * @throws InvalidArgumentException When an array value is expected, but not
      *     provided.
+     * @param callable|null $validator
+     * @return void
      */
     private function validateValue(
         $value,
         bool $valueIsArray,
-        ?callable $validator,
+        $validator,
         string $paramName
-    ): void {
+    ) {
         // No validator: nothing to do
         if (! $validator) {
             return;
@@ -302,7 +322,10 @@ abstract class AbstractParamAwareInput implements ParamAwareInputInterface
         return $values;
     }
 
-    private function prependSkipValidator(Question $question): ?callable
+    /**
+     * @return callable|null
+     */
+    private function prependSkipValidator(Question $question)
     {
         $originalValidator = $question->getValidator();
         if (null === $originalValidator) {

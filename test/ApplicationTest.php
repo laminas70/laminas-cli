@@ -80,8 +80,9 @@ class ApplicationTest extends TestCase
      *     2:list<class-string>,
      *     3?:list<int>
      * }>
+     * @return mixed[]
      */
-    public function chainAnswer(): iterable
+    public function chainAnswer()
     {
         yield 'execute whole chain' => [
             ['Y', 'Y', 'Y'],
@@ -248,13 +249,14 @@ class ApplicationTest extends TestCase
      * @param string[] $contains
      * @param string[] $doesNotContain
      * @param int[]    $exitCodes
+     * @return void
      */
     public function testChainCommand(
-        array $answers,
-        array $contains,
-        array $doesNotContain,
-        array $exitCodes = []
-    ): void {
+        $answers,
+        $contains,
+        $doesNotContain,
+        $exitCodes = []
+    ) {
         $application = $this->getApplication($exitCodes);
 
         $applicationTester = new ApplicationTester($application);
@@ -280,7 +282,10 @@ class ApplicationTest extends TestCase
         }
     }
 
-    public function testPassCustomParams(): void
+    /**
+     * @return void
+     */
+    public function testPassCustomParams()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->method('has')->willReturnMap([
@@ -339,7 +344,10 @@ class ApplicationTest extends TestCase
         }
     }
 
-    public function testCustomInputMapper(): void
+    /**
+     * @return void
+     */
+    public function testCustomInputMapper()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->method('has')->willReturnMap([
@@ -395,7 +403,10 @@ class ApplicationTest extends TestCase
         }
     }
 
-    public function testList(): void
+    /**
+     * @return void
+     */
+    public function testList()
     {
         $application = $this->getApplication();
 
@@ -419,7 +430,10 @@ class ApplicationTest extends TestCase
         );
     }
 
-    public function testParamInput(): void
+    /**
+     * @return void
+     */
+    public function testParamInput()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->method('has')->willReturnMap([
@@ -472,7 +486,10 @@ class ApplicationTest extends TestCase
         }
     }
 
-    public function testParamInputNonInteractiveMissingParameter(): void
+    /**
+     * @return void
+     */
+    public function testParamInputNonInteractiveMissingParameter()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container
@@ -519,8 +536,9 @@ class ApplicationTest extends TestCase
     /**
      * @see https://github.com/laminas/laminas-cli/pull/28
      * @see https://github.com/laminas/laminas-cli/pull/29
+     * @return void
      */
-    public function testListIncludesCommandWithDependencies(): void
+    public function testListIncludesCommandWithDependencies()
     {
         $config = [
             'laminas-cli' => [
@@ -578,8 +596,9 @@ class ApplicationTest extends TestCase
     /**
      * @see https://github.com/laminas/laminas-cli/pull/28
      * @see https://github.com/laminas/laminas-cli/pull/29
+     * @return void
      */
-    public function testHelpDisplaysInformationForCommandWithDependencies(): void
+    public function testHelpDisplaysInformationForCommandWithDependencies()
     {
         $config = [
             'laminas-cli' => [

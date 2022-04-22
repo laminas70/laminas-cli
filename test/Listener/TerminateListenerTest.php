@@ -52,7 +52,10 @@ class TerminateListenerTest extends TestCase
      */
     private $output;
 
-    protected function setUp(): void
+    /**
+     * @return void
+     */
+    protected function setUp()
     {
         parent::setUp();
 
@@ -61,7 +64,10 @@ class TerminateListenerTest extends TestCase
         $this->output  = $this->createMock(OutputInterface::class);
     }
 
-    public function testSkipIfExitStatusIsNotZero(): void
+    /**
+     * @return void
+     */
+    public function testSkipIfExitStatusIsNotZero()
     {
         $this->input->expects($this->never())->method('isInteractive');
         $this->command->expects($this->never())->method('getApplication');
@@ -72,7 +78,10 @@ class TerminateListenerTest extends TestCase
         $listener($event);
     }
 
-    public function testSkipIfNotInteractiveMode(): void
+    /**
+     * @return void
+     */
+    public function testSkipIfNotInteractiveMode()
     {
         $this->input->expects($this->once())->method('isInteractive')->willReturn(true);
         $this->command->expects($this->never())->method('getApplication');
@@ -83,7 +92,10 @@ class TerminateListenerTest extends TestCase
         $listener($event);
     }
 
-    public function testSkipIfThereIsNoChain(): void
+    /**
+     * @return void
+     */
+    public function testSkipIfThereIsNoChain()
     {
         $this->input->expects($this->once())->method('isInteractive')->willReturn(true);
         $this->command->expects($this->never())->method('getApplication');
@@ -94,7 +106,10 @@ class TerminateListenerTest extends TestCase
         $listener($event);
     }
 
-    public function testSkipIfChainConfigurationIsNotAnArray(): void
+    /**
+     * @return void
+     */
+    public function testSkipIfChainConfigurationIsNotAnArray()
     {
         $this->input->expects($this->once())->method('isInteractive')->willReturn(true);
         $command = new ExampleCommand();
@@ -109,7 +124,10 @@ class TerminateListenerTest extends TestCase
         $listener($event);
     }
 
-    public function testNotifiesOfThirdPartyCommandInChain(): void
+    /**
+     * @return void
+     */
+    public function testNotifiesOfThirdPartyCommandInChain()
     {
         $listener = new TerminateListener([
             'commands' => [
@@ -188,7 +206,10 @@ class TerminateListenerTest extends TestCase
         $this->assertNull($listener($event));
     }
 
-    public function testDoesNotNotifyForLocalCommandInChain(): void
+    /**
+     * @return void
+     */
+    public function testDoesNotNotifyForLocalCommandInChain()
     {
         $listener = new TerminateListener([
             'commands' => [
@@ -259,16 +280,19 @@ class TerminateListenerTest extends TestCase
         $this->assertNull($listener($event));
     }
 
-    public function testVendorDirectoryCanBeResolvedViaComposerSetting(): void
+    /**
+     * @return void
+     */
+    public function testVendorDirectoryCanBeResolvedViaComposerSetting()
     {
         $path         = realpath(__DIR__);
         $composerJson = <<<END
-            {
-                "config": {
-                    "vendor-dir": "$path"
-                }
-            }
-            END;
+{
+    "config": {
+        "vendor-dir": "{$path}"
+    }
+}
+END;
 
         $expected = rtrim(realpath(preg_replace('#\\\\#', '/', __DIR__)), '/') . '/';
 
@@ -295,16 +319,18 @@ class TerminateListenerTest extends TestCase
 
     /**
      * @dataProvider homeDirectorySpecifications
+     * @param string $spec
+     * @return void
      */
-    public function testVendorDirectorySpecifiedAsHomeInComposerSettingResolvesToHomeDirectory(string $spec): void
+    public function testVendorDirectorySpecifiedAsHomeInComposerSettingResolvesToHomeDirectory($spec)
     {
         $composerJson = <<<END
-            {
-                "config": {
-                    "vendor-dir": "$spec"
-                }
-            }
-            END;
+{
+    "config": {
+        "vendor-dir": "{$spec}"
+    }
+}
+END;
 
         $home = $_SERVER['HOME'];
         Assert::string($home);
@@ -320,7 +346,10 @@ class TerminateListenerTest extends TestCase
         );
     }
 
-    private function getFirstHomeSubdirectory(string $home): ?string
+    /**
+     * @return string|null
+     */
+    private function getFirstHomeSubdirectory(string $home)
     {
         Assert::directory($home);
         $handle = opendir($home);
@@ -336,8 +365,10 @@ class TerminateListenerTest extends TestCase
 
     /**
      * @dataProvider homeDirectorySpecifications
+     * @param string $spec
+     * @return void
      */
-    public function testVendorDirectoryStartingWithHomeInComposerSettingResolvesViaHomeDirectory(string $spec): void
+    public function testVendorDirectoryStartingWithHomeInComposerSettingResolvesViaHomeDirectory($spec)
     {
         $home = $_SERVER['HOME'];
         Assert::string($home);
@@ -348,12 +379,12 @@ class TerminateListenerTest extends TestCase
         }
 
         $composerJson = <<<END
-            {
-                "config": {
-                    "vendor-dir": "$spec/$subdir"
-                }
-            }
-            END;
+{
+    "config": {
+        "vendor-dir": "{$spec}/{$subdir}"
+    }
+}
+END;
 
         $expected = rtrim(realpath(preg_replace('#\\\\#', '/', $home)), '/') . '/' . $subdir . '/';
         $listener = new TerminateListener([]);

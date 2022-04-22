@@ -25,11 +25,15 @@ use function sys_get_temp_dir;
  */
 final class ContainerResolverTest extends TestCase
 {
-    public function testWillLoadContainerFromInputOption(): void
+    /**
+     * @return void
+     */
+    public function testWillLoadContainerFromInputOption()
     {
         $containerFileContents = sprintf(<<<EOT
-            <?php return new \Laminas\ServiceManager\ServiceManager();
-        EOT);
+    <?php return new \\Laminas\\ServiceManager\\ServiceManager();
+EOT
+);
 
         $containerPath = 'container.php';
         $directory     = vfsStream::setup('root', null, [
@@ -55,7 +59,10 @@ final class ContainerResolverTest extends TestCase
         $resolver->resolve($input);
     }
 
-    public function testWillLoadContainerFromApplicationConfig(): void
+    /**
+     * @return void
+     */
+    public function testWillLoadContainerFromApplicationConfig()
     {
         $input = $this->createMock(InputInterface::class);
 
@@ -65,13 +72,17 @@ final class ContainerResolverTest extends TestCase
         self::assertTrue($container->has(ExampleDependency::class));
     }
 
-    public function testWillLoadContainerFromMezzioContainerPath(): void
+    /**
+     * @return void
+     */
+    public function testWillLoadContainerFromMezzioContainerPath()
     {
         $containerFileContents = sprintf(<<<EOT
-            <?php \$container = new \Laminas\ServiceManager\ServiceManager();
-            \$container->setService('foo', 'bar');
-            return \$container;
-        EOT);
+    <?php \$container = new \\Laminas\\ServiceManager\\ServiceManager();
+    \$container->setService('foo', 'bar');
+    return \$container;
+EOT
+);
 
         $directory = vfsStream::setup('root', null, [
             'config' => [
@@ -89,11 +100,15 @@ final class ContainerResolverTest extends TestCase
         self::assertTrue($container->has('foo'));
     }
 
-    public function testCanHandleAbsolutePathForContainerOption(): void
+    /**
+     * @return void
+     */
+    public function testCanHandleAbsolutePathForContainerOption()
     {
         $containerFileContents = sprintf(<<<EOT
-            <?php return new \Laminas\ServiceManager\ServiceManager();
-        EOT);
+    <?php return new \\Laminas\\ServiceManager\\ServiceManager();
+EOT
+);
 
         $containerFileName = 'container.php';
         $directory         = vfsStream::setup('root', null, [
@@ -119,7 +134,10 @@ final class ContainerResolverTest extends TestCase
         $resolver->resolve($input);
     }
 
-    public function testWillThrowRuntimeExceptionWhenNoContainerCouldBeDetected(): void
+    /**
+     * @return void
+     */
+    public function testWillThrowRuntimeExceptionWhenNoContainerCouldBeDetected()
     {
         $tempDirectory = sys_get_temp_dir();
         if ($tempDirectory === '') {

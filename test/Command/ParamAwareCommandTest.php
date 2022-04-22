@@ -30,7 +30,10 @@ class ParamAwareCommandTest extends TestCase
      */
     private $questionHelper;
 
-    public function setUp(): void
+    /**
+     * @return void
+     */
+    public function setUp()
     {
         $this->questionHelper = $this->createMock(QuestionHelper::class);
 
@@ -50,7 +53,10 @@ class ParamAwareCommandTest extends TestCase
         $this->command = new $stubClass($helperSet);
     }
 
-    public function testAddParamProxiesToAddOption(): void
+    /**
+     * @return void
+     */
+    public function testAddParamProxiesToAddOption()
     {
         $param = (new BoolParam('test'))
             ->setDescription('Yes or no')
@@ -63,14 +69,17 @@ class ParamAwareCommandTest extends TestCase
         $this->assertArrayHasKey('test', $this->command->options);
 
         $option = $this->command->options['test'];
-        $this->assertIsArray($option);
+        $this->asserTrue(is_array($option));
         $this->assertSame($param->getShortcut(), $option['shortcut']);
         $this->assertSame($param->getOptionMode(), $option['mode']);
         $this->assertSame($param->getDescription(), $option['description']);
         $this->assertNull($option['default']); // Option default is always null!
     }
 
-    public function testRunDecoratesInputInParameterAwareInputInstance(): void
+    /**
+     * @return void
+     */
+    public function testRunDecoratesInputInParameterAwareInputInstance()
     {
         /** @psalm-var InputInterface&MockObject $input */
         $input = $this->createMock(InputInterface::class);

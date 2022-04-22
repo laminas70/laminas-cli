@@ -22,7 +22,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 final class ApplicationProvisionerTest extends TestCase
 {
-    public function testWillConfigureApplication(): void
+    /**
+     * @return void
+     */
+    public function testWillConfigureApplication()
     {
         $application = $this->createMock(Application::class);
 

@@ -19,7 +19,10 @@ use Webmozart\Assert\Assert;
 /** @psalm-suppress PropertyNotSetInConstructor */
 class ContainerCommandLoaderTest extends TestCase
 {
-    public function testGetCommandHasName(): void
+    /**
+     * @return void
+     */
+    public function testGetCommandHasName()
     {
         $commands = [
             'foo-bar-command' => TestAsset\ExampleCommand::class,
@@ -43,7 +46,10 @@ class ContainerCommandLoaderTest extends TestCase
         self::assertSame('foo-bar-command', $command->getName());
     }
 
-    public function testGetCommandReturnsCommand(): void
+    /**
+     * @return void
+     */
+    public function testGetCommandReturnsCommand()
     {
         $input = $this->createMock(InputInterface::class);
 
@@ -68,7 +74,10 @@ class ContainerCommandLoaderTest extends TestCase
         self::assertInstanceOf(ExampleCommandWithDependencies::class, $command);
     }
 
-    public function testHasWillReturnTrueWhenTheCommandIsMappedButNotPresentInTheContainer(): void
+    /**
+     * @return void
+     */
+    public function testHasWillReturnTrueWhenTheCommandIsMappedButNotPresentInTheContainer()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
@@ -83,7 +92,10 @@ class ContainerCommandLoaderTest extends TestCase
         self::assertTrue($loader->has('my:command'));
     }
 
-    public function testCommandWillBeConstructedWhenNotPresentInTheContainer(): void
+    /**
+     * @return void
+     */
+    public function testCommandWillBeConstructedWhenNotPresentInTheContainer()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
@@ -104,7 +116,10 @@ class ContainerCommandLoaderTest extends TestCase
         self::assertInstanceOf(ExampleCommand::class, $command);
     }
 
-    public function testAnExceptionIsThrownWhenACommandAbsentFromTheContainerCannotBeConstructed(): void
+    /**
+     * @return void
+     */
+    public function testAnExceptionIsThrownWhenACommandAbsentFromTheContainerCannotBeConstructed()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::once())
@@ -130,7 +145,10 @@ class ContainerCommandLoaderTest extends TestCase
         $this->fail('An exception was not thrown');
     }
 
-    public function testLoaderReturnsFalseWhenTestingCommandThatDoesNotExist(): void
+    /**
+     * @return void
+     */
+    public function testLoaderReturnsFalseWhenTestingCommandThatDoesNotExist()
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->expects(self::never())

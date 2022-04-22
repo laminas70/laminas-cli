@@ -17,7 +17,10 @@ class ChoiceParamTest extends TestCase
     /** @var ChoiceParam */
     private $param;
 
-    public function setUp(): void
+    /**
+     * @return void
+     */
+    public function setUp()
     {
         $this->choices = [
             'Red',
@@ -32,15 +35,19 @@ class ChoiceParamTest extends TestCase
         $this->param->setDescription('Which color');
     }
 
-    public function testUsesValueRequiredOptionMode(): void
+    /**
+     * @return void
+     */
+    public function testUsesValueRequiredOptionMode()
     {
         $this->assertSame(InputOption::VALUE_REQUIRED, $this->param->getOptionMode());
     }
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:?string,1:string}>
+     * @return mixed[]
      */
-    public function defaultChoices(): iterable
+    public function defaultChoices()
     {
         $question = '<question>Which color?</question>';
 
@@ -52,11 +59,14 @@ class ChoiceParamTest extends TestCase
 
     /**
      * @dataProvider defaultChoices
+     * @param string|null $default
+     * @param string $expectedQuestionText
+     * @return void
      */
     public function testQuestionReturnedIncludesChoicesAndDefault(
-        ?string $default,
-        string $expectedQuestionText
-    ): void {
+        $default,
+        $expectedQuestionText
+    ) {
         $this->param->setDefault($default);
         $question = $this->param->getQuestion();
         $this->assertInstanceOf(ChoiceQuestion::class, $question);
@@ -64,7 +74,10 @@ class ChoiceParamTest extends TestCase
         $this->assertSame($this->choices, $question->getChoices());
     }
 
-    public function testQuestionCreatedDoesNotIndicateMultiPromptByDefault(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedDoesNotIndicateMultiPromptByDefault()
     {
         $question = $this->param->getQuestion();
         self::assertStringNotContainsString(
@@ -74,7 +87,10 @@ class ChoiceParamTest extends TestCase
     }
 
     // phpcs:ignore Generic.Files.LineLength.TooLong
-    public function testQuestionCreatedIncludesMultiPromptButNotRequiredPromptWhenValueAllowsMultipleButNotRequired(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedIncludesMultiPromptButNotRequiredPromptWhenValueAllowsMultipleButNotRequired()
     {
         $this->param->setAllowMultipleFlag(true);
         $this->param->setRequiredFlag(false);
@@ -89,7 +105,10 @@ class ChoiceParamTest extends TestCase
         );
     }
 
-    public function testQuestionCreatedIncludesMultiPromptAndRequiredPromptWhenValueAllowsMultipleAndIsRequired(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedIncludesMultiPromptAndRequiredPromptWhenValueAllowsMultipleAndIsRequired()
     {
         $this->param->setAllowMultipleFlag(true);
         $this->param->setRequiredFlag(true);
@@ -104,7 +123,10 @@ class ChoiceParamTest extends TestCase
         );
     }
 
-    public function testCallingSetAllowMultipleWithBooleanFalseAfterPreviouslyCallingItWithTrueRemovesOptionFlag(): void
+    /**
+     * @return void
+     */
+    public function testCallingSetAllowMultipleWithBooleanFalseAfterPreviouslyCallingItWithTrueRemovesOptionFlag()
     {
         $this->param->setAllowMultipleFlag(true);
         self::assertSame(InputOption::VALUE_IS_ARRAY, $this->param->getOptionMode() & InputOption::VALUE_IS_ARRAY);

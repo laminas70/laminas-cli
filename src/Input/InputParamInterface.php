@@ -43,8 +43,9 @@ interface InputParamInterface
 
     /**
      * @return $this
+     * @param string $description
      */
-    public function setDescription(string $description): InputParamInterface;
+    public function setDescription($description): InputParamInterface;
 
     /**
      * @param null|string|string[] $shortcut One of (a) a string with a single
@@ -56,6 +57,7 @@ interface InputParamInterface
 
     /**
      * @return $this
+     * @param bool $required
      */
-    public function setRequiredFlag(bool $required): InputParamInterface;
+    public function setRequiredFlag($required): InputParamInterface;
 }

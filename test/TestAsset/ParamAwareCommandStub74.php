@@ -10,12 +10,15 @@ class ParamAwareCommandStub74 extends AbstractParamAwareCommandStub
      * @param string|array|null $shortcut
      * @param null|mixed        $default Defaults to null.
      * @return $this
+     * @param string $name
+     * @param int|null $mode
+     * @param string $description
      */
     public function addOption(
-        string $name,
+        $name,
         $shortcut = null,
-        ?int $mode = null,
-        string $description = '',
+        $mode = null,
+        $description = '',
         $default = null
     ) {
         return $this->doAddOption($name, $shortcut, $mode, $description, $default);

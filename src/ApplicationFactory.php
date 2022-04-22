@@ -18,11 +18,11 @@ use Webmozart\Assert\Assert;
  */
 final class ApplicationFactory
 {
-    public const CONTAINER_OPTION = 'container';
+    const CONTAINER_OPTION = 'container';
 
     public function __invoke(): Application
     {
-        $version = InstalledVersions::getPrettyVersion('laminas/laminas-cli');
+        $version = InstalledVersions::getPrettyVersion('laminas70/laminas-cli');
         Assert::string($version);
         $application = new Application('laminas', $version);
         $application->setAutoExit(false);

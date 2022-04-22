@@ -16,20 +16,27 @@ class BoolParamTest extends TestCase
     /** @var BoolParam */
     private $param;
 
-    public function setUp(): void
+    /**
+     * @return void
+     */
+    public function setUp()
     {
         $this->param = new BoolParam('test');
     }
 
-    public function testUsesValueNoneOptionMode(): void
+    /**
+     * @return void
+     */
+    public function testUsesValueNoneOptionMode()
     {
         $this->assertSame(InputOption::VALUE_NONE, $this->param->getOptionMode());
     }
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:bool,1:string}>
+     * @return mixed[]
      */
-    public function defaultValues(): iterable
+    public function defaultValues()
     {
         yield 'false' => [false, 'y/N'];
         yield 'true'  => [true, 'Y/n'];
@@ -37,11 +44,14 @@ class BoolParamTest extends TestCase
 
     /**
      * @dataProvider defaultValues
+     * @param bool $default
+     * @param string $expectedDefaultString
+     * @return void
      */
     public function testReturnsConfirmationQuestionUsingDescriptionAndDefault(
-        bool $default,
-        string $expectedDefaultString
-    ): void {
+        $default,
+        $expectedDefaultString
+    ) {
         $description = 'This is the option description';
         $this->param->setDefault($default);
         $this->param->setDescription($description);

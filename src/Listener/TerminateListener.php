@@ -40,13 +40,13 @@ use const PHP_EOL;
  */
 final class TerminateListener
 {
-    private const ALLOWED_VENDORS = [
+    const ALLOWED_VENDORS = [
         'laminas',
         'laminas-api-tools',
         'mezzio',
     ];
 
-    private const HOME_PATH_REGEX = '#^(~|\$HOME)#';
+    const HOME_PATH_REGEX = '#^(~|\$HOME)#';
 
     /** @var array */
     private $config;
@@ -56,7 +56,10 @@ final class TerminateListener
         $this->config = $config;
     }
 
-    public function __invoke(ConsoleTerminateEvent $event): void
+    /**
+     * @return void
+     */
+    public function __invoke(ConsoleTerminateEvent $event)
     {
         if ($event->getExitCode() !== 0 || ! $event->getInput()->isInteractive()) {
             return;
@@ -169,7 +172,10 @@ final class TerminateListener
         return new $inputMapperSpec();
     }
 
-    private function validateInputMap(array $inputMap, string $commandClass): void
+    /**
+     * @return void
+     */
+    private function validateInputMap(array $inputMap, string $commandClass)
     {
         foreach ($inputMap as $value) {
             if (is_string($value)) {
@@ -184,8 +190,9 @@ final class TerminateListener
 
     /**
      * @psalm-return non-empty-string
+     * @param string|null $composerJson
      */
-    private function getVendorDirectory(?string $composerJson = null): string
+    private function getVendorDirectory($composerJson = null): string
     {
         $basePath = getcwd();
         if (null === $composerJson) {

@@ -62,7 +62,10 @@ class ParamAwareInputTest extends TestCase
     /** @var InputParamInterface[] */
     private $params;
 
-    public function setUp(): void
+    /**
+     * @return void
+     */
+    public function setUp()
     {
         $this->class = ParamAwareInput::class;
 
@@ -110,7 +113,7 @@ class ParamAwareInputTest extends TestCase
      * @param string[] $inputs
      * @return resource
      */
-    public function mockStream(array $inputs)
+    public function mockStream($inputs)
     {
         $stream = fopen('php://memory', 'r+', false);
 
@@ -125,8 +128,9 @@ class ParamAwareInputTest extends TestCase
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:string,1:list<mixed>,2:mixed}>
+     * @return mixed[]
      */
-    public function proxyMethodsAndArguments(): iterable
+    public function proxyMethodsAndArguments()
     {
         // AbstractParamAwareInput methods
         yield 'getFirstArgument' => ['getFirstArgument', [], 'first'];
@@ -154,51 +158,48 @@ class ParamAwareInputTest extends TestCase
     /**
      * @dataProvider proxyMethodsAndArguments
      * @param mixed $expectedOutput
+     * @param string $method
+     * @param mixed[] $arguments
+     * @return void
      */
     public function testProxiesToDecoratedInput(
-        string $method,
-        array $arguments,
+        $method,
+        $arguments,
         $expectedOutput
-    ): void {
+    ) {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
             ->method($method)
             ->with(...$arguments)
             ->willReturn($expectedOutput);
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            $this->params
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, $this->params);
 
         $this->assertSame($expectedOutput, $input->$method(...$arguments));
     }
 
-    public function testSetStreamDoesNotProxyToDecoratedInputWhenNotStreamable(): void
+    /**
+     * @return void
+     */
+    public function testSetStreamDoesNotProxyToDecoratedInputWhenNotStreamable()
     {
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            $this->params
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, $this->params);
         $this->assertNull($input->setStream(STDIN));
     }
 
-    public function testGetStreamDoesNotProxyToDecoratedInputWhenNotStreamable(): void
+    /**
+     * @return void
+     */
+    public function testGetStreamDoesNotProxyToDecoratedInputWhenNotStreamable()
     {
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            $this->params
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, $this->params);
         $this->assertNull($input->getStream());
     }
 
-    public function testCanSetStreamOnDecoratedStreamableInput(): void
+    /**
+     * @return void
+     */
+    public function testCanSetStreamOnDecoratedStreamableInput()
     {
         $decoratedInput = $this->createMock(StreamableInputInterface::class);
         $decoratedInput
@@ -207,17 +208,15 @@ class ParamAwareInputTest extends TestCase
             ->with($this->identicalTo(STDIN))
             ->willReturn(null);
 
-        $input = new $this->class(
-            $decoratedInput,
-            $this->output,
-            $this->helper,
-            $this->params
-        );
+        $input = new $this->class($decoratedInput, $this->output, $this->helper, $this->params);
 
         $this->assertNull($input->setStream(STDIN));
     }
 
-    public function testCanRetrieveStreamFromDecoratedStreamableInput(): void
+    /**
+     * @return void
+     */
+    public function testCanRetrieveStreamFromDecoratedStreamableInput()
     {
         $decoratedInput = $this->createMock(StreamableInputInterface::class);
         $decoratedInput
@@ -225,31 +224,27 @@ class ParamAwareInputTest extends TestCase
             ->method('getStream')
             ->willReturn(STDIN);
 
-        $input = new $this->class(
-            $decoratedInput,
-            $this->output,
-            $this->helper,
-            $this->params
-        );
+        $input = new $this->class($decoratedInput, $this->output, $this->helper, $this->params);
 
         $this->assertIsResource($input->getStream());
     }
 
-    public function testGetParamRaisesExceptionIfParamDoesNotExist(): void
+    /**
+     * @return void
+     */
+    public function testGetParamRaisesExceptionIfParamDoesNotExist()
     {
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            $this->params
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, $this->params);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid parameter name');
         $input->getParam('does-not-exist');
     }
 
-    public function testGetParamReturnsDefaultValueWhenInputIsNonInteractiveAndNoOptionPassed(): void
+    /**
+     * @return void
+     */
+    public function testGetParamReturnsDefaultValueWhenInputIsNonInteractiveAndNoOptionPassed()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -261,17 +256,15 @@ class ParamAwareInputTest extends TestCase
             ->method('isInteractive')
             ->willReturn(false);
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['choices' => $this->params['choices']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['choices' => $this->params['choices']]);
 
         $this->assertSame('a', $input->getParam('choices'));
     }
 
-    public function testGetParamReturnsDefaultValueWhenInputIsNonInteractiveAndNoOptionPassedForArrayParam(): void
+    /**
+     * @return void
+     */
+    public function testGetParamReturnsDefaultValueWhenInputIsNonInteractiveAndNoOptionPassedForArrayParam()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -283,20 +276,16 @@ class ParamAwareInputTest extends TestCase
             ->method('isInteractive')
             ->willReturn(false);
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['multi-int-with-default' => $this->params['multi-int-with-default']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['multi-int-with-default' => $this->params['multi-int-with-default']]);
 
         $this->assertSame([1, 2], $input->getParam('multi-int-with-default'));
     }
 
     /**
      * @see https://github.com/laminas/laminas-cli/issues/55
+     * @return void
      */
-    public function testGetParamReturnsOptionValueWhenInputOptionPassedForScalarParam(): void
+    public function testGetParamReturnsOptionValueWhenInputOptionPassedForScalarParam()
     {
         $this->decoratedInput
             ->expects($this->once())
@@ -309,17 +298,15 @@ class ParamAwareInputTest extends TestCase
             ->expects($this->never())
             ->method('isInteractive');
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['int' => $this->params['int']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['int' => $this->params['int']]);
 
         $this->assertSame(10, $input->getParam('int'));
     }
 
-    public function testGetParamReturnsOptionValueWhenInputOptionPassedForArrayParam(): void
+    /**
+     * @return void
+     */
+    public function testGetParamReturnsOptionValueWhenInputOptionPassedForArrayParam()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -330,17 +317,15 @@ class ParamAwareInputTest extends TestCase
             ->expects($this->never())
             ->method('isInteractive');
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['multi-int-with-default' => $this->params['multi-int-with-default']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['multi-int-with-default' => $this->params['multi-int-with-default']]);
 
         $this->assertSame([10], $input->getParam('multi-int-with-default'));
     }
 
-    public function testGetParamRaisesExceptionWhenScalarProvidedForArrayParam(): void
+    /**
+     * @return void
+     */
+    public function testGetParamRaisesExceptionWhenScalarProvidedForArrayParam()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -351,19 +336,17 @@ class ParamAwareInputTest extends TestCase
             ->expects($this->never())
             ->method('isInteractive');
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['multi-int-with-default' => $this->params['multi-int-with-default']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['multi-int-with-default' => $this->params['multi-int-with-default']]);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('expects an array of values');
         $input->getParam('multi-int-with-default');
     }
 
-    public function testGetParamRaisesExceptionWhenOptionValuePassedForArrayParamIsInvalid(): void
+    /**
+     * @return void
+     */
+    public function testGetParamRaisesExceptionWhenOptionValuePassedForArrayParamIsInvalid()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -374,19 +357,17 @@ class ParamAwareInputTest extends TestCase
             ->expects($this->never())
             ->method('isInteractive');
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['multi-int-with-default' => $this->params['multi-int-with-default']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['multi-int-with-default' => $this->params['multi-int-with-default']]);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('integer expected');
         $input->getParam('multi-int-with-default');
     }
 
-    public function testGetParamRaisesExceptionIfParameterIsRequiredButNotProvidedAndInputIsNoninteractive(): void
+    /**
+     * @return void
+     */
+    public function testGetParamRaisesExceptionIfParameterIsRequiredButNotProvidedAndInputIsNoninteractive()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -398,19 +379,17 @@ class ParamAwareInputTest extends TestCase
             ->method('isInteractive')
             ->willReturn(false);
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['name' => $this->params['name']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['name' => $this->params['name']]);
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Missing required value for --name parameter');
         $input->getParam('name');
     }
 
-    public function testGetParamPromptsForValueWhenOptionIsNotProvidedAndInputIsInteractive(): void
+    /**
+     * @return void
+     */
+    public function testGetParamPromptsForValueWhenOptionIsNotProvidedAndInputIsInteractive()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -429,12 +408,7 @@ class ParamAwareInputTest extends TestCase
                 $this->equalTo('Laminas')
             );
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['name' => $this->params['name']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['name' => $this->params['name']]);
 
         // getQuestion returns a NEW instance each time, so we cannot test for
         // an identical question instance, only the type.
@@ -451,7 +425,10 @@ class ParamAwareInputTest extends TestCase
         $this->assertSame('Laminas', $input->getParam('name'));
     }
 
-    public function testGetParamPromptsUntilEmptySubmissionWhenParamIsArrayAndInputIsInteractive(): void
+    /**
+     * @return void
+     */
+    public function testGetParamPromptsUntilEmptySubmissionWhenParamIsArrayAndInputIsInteractive()
     {
         $this->decoratedInput
             ->expects($this->atLeastOnce())
@@ -470,12 +447,7 @@ class ParamAwareInputTest extends TestCase
                 $this->equalTo([10, 2, 7])
             );
 
-        $input = new $this->class(
-            $this->decoratedInput,
-            $this->output,
-            $this->helper,
-            ['multi-int-with-default' => $this->params['multi-int-with-default']]
-        );
+        $input = new $this->class($this->decoratedInput, $this->output, $this->helper, ['multi-int-with-default' => $this->params['multi-int-with-default']]);
 
         // getQuestion returns a NEW instance each time, so we cannot test for
         // an identical question instance, only the type.
@@ -492,7 +464,10 @@ class ParamAwareInputTest extends TestCase
         $this->assertSame([10, 2, 7], $input->getParam('multi-int-with-default'));
     }
 
-    public function testGetParamPromptsForValuesUntilAtLeastOneIsProvidedWhenRequired(): void
+    /**
+     * @return void
+     */
+    public function testGetParamPromptsForValuesUntilAtLeastOneIsProvidedWhenRequired()
     {
         $decoratedInput = $this->createMock(StreamableInputInterface::class);
         // This sets us up to enter the following lines:
@@ -547,20 +522,16 @@ class ParamAwareInputTest extends TestCase
             ->with($this->stringContains('<error>'));
 
         $helper = new QuestionHelper();
-        $input  = new $this->class(
-            $decoratedInput,
-            $this->output,
-            $helper,
-            ['multi-int-required' => $this->params['multi-int-required']]
-        );
+        $input  = new $this->class($decoratedInput, $this->output, $helper, ['multi-int-required' => $this->params['multi-int-required']]);
 
         $this->assertSame([10, 1], $input->getParam('multi-int-required'));
     }
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:class-string<InputParamInterface>,1?:list<mixed>}>
+     * @return mixed[]
      */
-    public function paramTypesToTestAgainstFalseRequiredFlag(): iterable
+    public function paramTypesToTestAgainstFalseRequiredFlag()
     {
         yield 'IntParam'    => [IntParam::class];
         yield 'PathParam'   => [PathParam::class, [PathParam::TYPE_DIR]];
@@ -570,11 +541,14 @@ class ParamAwareInputTest extends TestCase
     /**
      * @dataProvider paramTypesToTestAgainstFalseRequiredFlag
      * @psalm-param class-string<InputParamInterface> $class
+     * @param string $class
+     * @param mixed[] $additionalArgs
+     * @return void
      */
     public function testGetParamAllowsEmptyValuesForParamsWithValidationIfParamIsNotRequired(
-        string $class,
-        array $additionalArgs = []
-    ): void {
+        $class,
+        $additionalArgs = []
+    ) {
         $stream         = $this->mockStream(['']);
         $decoratedInput = $this->createMock(StreamableInputInterface::class);
         $decoratedInput
@@ -616,12 +590,7 @@ class ParamAwareInputTest extends TestCase
             }));
 
         $helper = new QuestionHelper();
-        $input  = new $this->class(
-            $decoratedInput,
-            $this->output,
-            $helper,
-            ['non-required' => new $class('non-required', ...$additionalArgs)]
-        );
+        $input  = new $this->class($decoratedInput, $this->output, $helper, ['non-required' => new $class('non-required', ...$additionalArgs)]);
 
         $this->assertNull($input->getParam('non-required'));
     }

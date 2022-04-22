@@ -15,7 +15,10 @@ class AbstractInputParamTest extends TestCase
     /** @var AbstractInputParam */
     private $param;
 
-    public function setUp(): void
+    /**
+     * @return void
+     */
+    public function setUp()
     {
         $this->param = new class ('test') extends AbstractInputParam {
             // phpcs:ignore WebimpressCodingStandard.Functions.ReturnType.InvalidNoReturn
@@ -26,55 +29,80 @@ class AbstractInputParamTest extends TestCase
         };
     }
 
-    public function testDescriptionIsEmptyByDefault(): void
+    /**
+     * @return void
+     */
+    public function testDescriptionIsEmptyByDefault()
     {
         $this->assertSame('', $this->param->getDescription());
     }
 
-    public function testCanSetAndRetrieveDescription(): void
+    /**
+     * @return void
+     */
+    public function testCanSetAndRetrieveDescription()
     {
         $description = 'This is the description';
         $this->param->setDescription($description);
         $this->assertSame($description, $this->param->getDescription());
     }
 
-    public function testDefaultValueIsNullByDefault(): void
+    /**
+     * @return void
+     */
+    public function testDefaultValueIsNullByDefault()
     {
         $this->assertNull($this->param->getDefault());
     }
 
-    public function testCanSetAndRetrieveDefaultValue(): void
+    /**
+     * @return void
+     */
+    public function testCanSetAndRetrieveDefaultValue()
     {
         $default = 'This is the default value';
         $this->param->setDefault($default);
         $this->assertSame($default, $this->param->getDefault());
     }
 
-    public function testCanRetrieveName(): void
+    /**
+     * @return void
+     */
+    public function testCanRetrieveName()
     {
         $this->assertSame('test', $this->param->getName());
     }
 
-    public function testNotRequiredByDefault(): void
+    /**
+     * @return void
+     */
+    public function testNotRequiredByDefault()
     {
         $this->assertFalse($this->param->isRequired());
     }
 
-    public function testCanSetRequiredFlag(): void
+    /**
+     * @return void
+     */
+    public function testCanSetRequiredFlag()
     {
         $this->param->setRequiredFlag(true);
         $this->assertTrue($this->param->isRequired());
     }
 
-    public function testShortcutIsNullByDefault(): void
+    /**
+     * @return void
+     */
+    public function testShortcutIsNullByDefault()
     {
         $this->assertNull($this->param->getShortcut());
     }
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:mixed,1?:string}>
+     * @return mixed[]
      */
-    public function invalidShortcutValues(): iterable
+    public function invalidShortcutValues()
     {
         yield 'bool'                   => [true];
         yield 'int'                    => [1];
@@ -93,11 +121,13 @@ class AbstractInputParamTest extends TestCase
     /**
      * @dataProvider invalidShortcutValues
      * @param mixed $shortcut
+     * @param string $expectedMesage
+     * @return void
      */
     public function testSettingShortcutShouldRaiseExceptionForInvalidValues(
         $shortcut,
-        string $expectedMesage = 'must be null, a non-zero-length string, or an array'
-    ): void {
+        $expectedMesage = 'must be null, a non-zero-length string, or an array'
+    ) {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedMesage);
         /** @psalm-suppress MixedArgument */
@@ -106,8 +136,9 @@ class AbstractInputParamTest extends TestCase
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:null|list<string>|string}>
+     * @return mixed[]
      */
-    public function validShortcutValues(): iterable
+    public function validShortcutValues()
     {
         yield 'null'                    => [null];
         yield 'string'                  => ['s'];
@@ -122,8 +153,9 @@ class AbstractInputParamTest extends TestCase
      * @dataProvider validShortcutValues
      * @param mixed $shortcut
      * @psalm-param null|string|string[] $shortcut
+     * @return void
      */
-    public function testAllowsSettingShortcutWithValidValues($shortcut): void
+    public function testAllowsSettingShortcutWithValidValues($shortcut)
     {
         $this->param->setShortcut($shortcut);
         $this->assertSame($shortcut, $this->param->getShortcut());

@@ -10,7 +10,10 @@ use Symfony\Component\Console\Input\InputInterface;
 
 class ArrayInputMapperTest extends TestCase
 {
-    public function testMapArgumentsAndOptions(): void
+    /**
+     * @return void
+     */
+    public function testMapArgumentsAndOptions()
     {
         $input = $this->createMock(InputInterface::class);
         $input->method('getArgument')->willReturnMap([
@@ -40,7 +43,10 @@ class ArrayInputMapperTest extends TestCase
         );
     }
 
-    public function testAdditionalParameter(): void
+    /**
+     * @return void
+     */
+    public function testAdditionalParameter()
     {
         $input = $this->createMock(InputInterface::class);
         $input->method('getArgument')->with('name')->willReturn('FooBar');

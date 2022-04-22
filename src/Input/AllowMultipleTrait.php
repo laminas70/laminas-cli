@@ -13,8 +13,9 @@ trait AllowMultipleTrait
      *
      * When enabled, the parameter will allow passing multiple options on the
      * command line, or, if none are provided, prompt multiple times for them.
+     * @param bool $flag
      */
-    public function setAllowMultipleFlag(bool $flag): self
+    public function setAllowMultipleFlag($flag): self
     {
         if ($flag) {
             $this->optionMode |= InputOption::VALUE_IS_ARRAY;

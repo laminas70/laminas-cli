@@ -11,12 +11,18 @@ use Symfony\Component\Console\Application;
 /** @psalm-suppress PropertyNotSetInConstructor */
 class ApplicationFactoryTest extends TestCase
 {
-    public function testPullsEventDispatcherFromContainerWhenPresent(): void
+    /**
+     * @return void
+     */
+    public function testPullsEventDispatcherFromContainerWhenPresent()
     {
         $this->assertInstanceOf(Application::class, (new ApplicationFactory())());
     }
 
-    public function testApplicationDefinitionContainsContainerOptionSoItIsAvailableForEveryCommand(): void
+    /**
+     * @return void
+     */
+    public function testApplicationDefinitionContainsContainerOptionSoItIsAvailableForEveryCommand()
     {
         $application = (new ApplicationFactory())();
         $definition  = $application->getDefinition();

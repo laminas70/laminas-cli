@@ -16,21 +16,28 @@ class StringParamTest extends TestCase
     /** @var StringParam */
     private $param;
 
-    public function setUp(): void
+    /**
+     * @return void
+     */
+    public function setUp()
     {
         $this->param = new StringParam('test');
         $this->param->setDescription('A string');
     }
 
-    public function testUsesValueRequiredOptionMode(): void
+    /**
+     * @return void
+     */
+    public function testUsesValueRequiredOptionMode()
     {
         $this->assertSame(InputOption::VALUE_REQUIRED, $this->param->getOptionMode());
     }
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:?string,1:string}>
+     * @return mixed[]
      */
-    public function defaultValues(): iterable
+    public function defaultValues()
     {
         $question = '<question>A string:</question>';
         $suffix   = PHP_EOL . ' > ';
@@ -41,65 +48,86 @@ class StringParamTest extends TestCase
 
     /**
      * @dataProvider defaultValues
+     * @param string|null $default
+     * @param string $expectedQuestionText
+     * @return void
      */
     public function testCreatesStandardQuestionUsingDefaultValue(
-        ?string $default,
-        string $expectedQuestionText
-    ): void {
+        $default,
+        $expectedQuestionText
+    ) {
         $this->param->setDefault($default);
         $question = $this->param->getQuestion();
         $this->assertEquals($expectedQuestionText, $question->getQuestion());
     }
 
-    public function testQuestionContainsAValidator(): void
+    /**
+     * @return void
+     */
+    public function testQuestionContainsAValidator()
     {
         $validator = $this->param->getQuestion()->getValidator();
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
     }
 
-    public function testValidatorRaisesExceptionIfValueIsNullAndRequired(): void
+    /**
+     * @return void
+     */
+    public function testValidatorRaisesExceptionIfValueIsNullAndRequired()
     {
         $this->param->setRequiredFlag(true);
         $validator = $this->param->getQuestion()->getValidator();
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid value: string expected');
         $validator(null);
     }
 
-    public function testValidatorReturnsValueVerbatimIfNoPatternProvided(): void
+    /**
+     * @return void
+     */
+    public function testValidatorReturnsValueVerbatimIfNoPatternProvided()
     {
         $this->param->setRequiredFlag(true);
         $validator = $this->param->getQuestion()->getValidator();
 
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
         $this->assertSame('a string', $validator('a string'));
     }
 
-    public function testValidatorRaisesExceptionIfValueDoesNotMatchProvidedPattern(): void
+    /**
+     * @return void
+     */
+    public function testValidatorRaisesExceptionIfValueDoesNotMatchProvidedPattern()
     {
         $this->param->setRequiredFlag(true);
         $this->param->setPattern('/^[A-Z][a-zA-Z0-9_]+$/');
         $validator = $this->param->getQuestion()->getValidator();
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid value: does not match pattern');
         $validator('this does not match the pattern');
     }
 
-    public function testValidatorReturnsValueVerbatimIfMatchesPatternProvided(): void
+    /**
+     * @return void
+     */
+    public function testValidatorReturnsValueVerbatimIfMatchesPatternProvided()
     {
         $this->param->setRequiredFlag(true);
         $this->param->setPattern('/^[A-Z][a-zA-Z0-9_]+$/');
         $validator = $this->param->getQuestion()->getValidator();
 
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
         $this->assertSame('AClassName', $validator('AClassName'));
     }
 
-    public function testSetPatternRaisesExceptionIfPatternIsInvalid(): void
+    /**
+     * @return void
+     */
+    public function testSetPatternRaisesExceptionIfPatternIsInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid PCRE pattern');
@@ -107,47 +135,59 @@ class StringParamTest extends TestCase
         $this->param->setPattern('This is#^ NOT** a! pattern,');
     }
 
-    public function testQuestionCreatedDoesNotIndicateMultiPromptByDefault(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedDoesNotIndicateMultiPromptByDefault()
     {
         $question = $this->param->getQuestion();
-        self::assertStringNotContainsString(
+        self::assertNotContains(
             'Multiple entries allowed',
             $question->getQuestion()
         );
     }
 
     // phpcs:ignore Generic.Files.LineLength.TooLong
-    public function testQuestionCreatedIncludesMultiPromptButNotRequiredPromptWhenValueAllowsMultipleButNotRequired(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedIncludesMultiPromptButNotRequiredPromptWhenValueAllowsMultipleButNotRequired()
     {
         $this->param->setAllowMultipleFlag(true);
         $this->param->setRequiredFlag(false);
         $question = $this->param->getQuestion();
-        self::assertStringContainsString(
+        self::assertContains(
             'Multiple entries allowed',
             $question->getQuestion()
         );
-        self::assertStringNotContainsString(
+        self::assertNotContains(
             'At least one entry is required. ',
             $question->getQuestion()
         );
     }
 
-    public function testQuestionCreatedIncludesMultiPromptAndRequiredPromptWhenValueAllowsMultipleAndIsRequired(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedIncludesMultiPromptAndRequiredPromptWhenValueAllowsMultipleAndIsRequired()
     {
         $this->param->setAllowMultipleFlag(true);
         $this->param->setRequiredFlag(true);
         $question = $this->param->getQuestion();
-        self::assertStringContainsString(
+        self::assertContains(
             'Multiple entries allowed',
             $question->getQuestion()
         );
-        self::assertStringContainsString(
+        self::assertContains(
             'At least one entry is required. ',
             $question->getQuestion()
         );
     }
 
-    public function testCallingSetAllowMultipleWithBooleanFalseAfterPreviouslyCallingItWithTrueRemovesOptionFlag(): void
+    /**
+     * @return void
+     */
+    public function testCallingSetAllowMultipleWithBooleanFalseAfterPreviouslyCallingItWithTrueRemovesOptionFlag()
     {
         $this->param->setAllowMultipleFlag(true);
         self::assertSame(InputOption::VALUE_IS_ARRAY, $this->param->getOptionMode() & InputOption::VALUE_IS_ARRAY);

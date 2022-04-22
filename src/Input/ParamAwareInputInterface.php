@@ -13,6 +13,7 @@ interface ParamAwareInputInterface extends
 {
     /**
      * @return mixed
+     * @param string $name
      */
-    public function getParam(string $name);
+    public function getParam($name);
 }

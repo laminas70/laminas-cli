@@ -13,12 +13,19 @@ class LocalCommand extends Command
     /** @var string|null */
     protected static $defaultName = 'local:command';
 
-    public function configure(): void
+    /**
+     * @return void
+     */
+    public function configure()
     {
         $this->setDescription('local command');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    protected function execute($input, $output): int
     {
         return 0;
     }

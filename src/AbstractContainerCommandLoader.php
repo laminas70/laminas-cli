@@ -39,7 +39,10 @@ abstract class AbstractContainerCommandLoader implements CommandLoaderInterface
         return $this->container;
     }
 
-    protected function getCommand(string $name): Command
+    /**
+     * @param string $name
+     */
+    protected function getCommand($name): Command
     {
         if ($this->container->has($this->commandMap[$name])) {
             return $this->fetchCommandFromContainer($name);
@@ -59,7 +62,10 @@ abstract class AbstractContainerCommandLoader implements CommandLoaderInterface
         return $this->createCommand($class, $name);
     }
 
-    protected function hasCommand(string $name): bool
+    /**
+     * @param string $name
+     */
+    protected function hasCommand($name): bool
     {
         if (! array_key_exists($name, $this->commandMap)) {
             return false;

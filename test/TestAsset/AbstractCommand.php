@@ -28,7 +28,10 @@ abstract class AbstractCommand extends Command
         $this->statusCode = $statusCode;
     }
 
-    protected function configure(): void
+    /**
+     * @return void
+     */
+    protected function configure()
     {
         Assert::stringNotEmpty(static::$defaultName);
         Assert::stringNotEmpty($this->argName);
@@ -41,7 +44,11 @@ abstract class AbstractCommand extends Command
         $this->addOption($this->optName, null, InputOption::VALUE_OPTIONAL);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    protected function execute($input, $output): int
     {
         /** @var string $arg */
         $arg = $input->getArgument($this->argName) ?: '';

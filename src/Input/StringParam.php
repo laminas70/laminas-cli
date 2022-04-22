@@ -54,8 +54,9 @@ final class StringParam extends AbstractInputParam
 
     /**
      * @throws InvalidArgumentException If PCRE pattern is invalid.
+     * @param string $pattern
      */
-    public function setPattern(string $pattern): self
+    public function setPattern($pattern): self
     {
         if (! $this->validatePattern($pattern)) {
             throw new InvalidArgumentException(sprintf('Invalid PCRE pattern "%s"', $pattern));

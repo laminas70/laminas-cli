@@ -114,7 +114,10 @@ abstract class AbstractInputParam implements InputParamInterface
         return $this;
     }
 
-    public function setDescription(string $description): InputParamInterface
+    /**
+     * @param string $description
+     */
+    public function setDescription($description): InputParamInterface
     {
         $this->description = $description;
         return $this;
@@ -131,7 +134,10 @@ abstract class AbstractInputParam implements InputParamInterface
         return $this;
     }
 
-    public function setRequiredFlag(bool $required): InputParamInterface
+    /**
+     * @param bool $required
+     */
+    public function setRequiredFlag($required): InputParamInterface
     {
         $this->required = $required;
         return $this;
@@ -141,8 +147,9 @@ abstract class AbstractInputParam implements InputParamInterface
      * @param mixed $shortcut
      * @throws InvalidArgumentException When shortcut is an invalid type.
      * @throws InvalidArgumentException When shortcut is empty.
+     * @return void
      */
-    private function validateShortcut($shortcut): void
+    private function validateShortcut($shortcut)
     {
         if (null === $shortcut) {
             return;

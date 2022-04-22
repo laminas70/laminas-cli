@@ -33,12 +33,15 @@ abstract class AbstractParamAwareCommandStub extends AbstractParamAwareCommand
      * @param string|array|null $shortcut
      * @param null|mixed        $default Defaults to null.
      * @return $this
+     * @param string $name
+     * @param int|null $mode
+     * @param string $description
      */
     protected function doAddOption(
-        string $name,
+        $name,
         $shortcut = null,
-        ?int $mode = null,
-        string $description = '',
+        $mode = null,
+        $description = '',
         $default = null
     ) {
         $this->options[$name] = [
@@ -50,16 +53,26 @@ abstract class AbstractParamAwareCommandStub extends AbstractParamAwareCommand
         return $this;
     }
 
-    public function getHelperSet(): HelperSet
+    /**
+     * @return \Symfony\Component\Console\Helper\HelperSet|null
+     */
+    public function getHelperSet()
     {
         return $this->helperSet;
     }
 
-    protected function configure(): void
+    /**
+     * @return void
+     */
+    protected function configure()
     {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    protected function execute($input, $output): int
     {
         $this->input  = $input;
         $this->output = $output;

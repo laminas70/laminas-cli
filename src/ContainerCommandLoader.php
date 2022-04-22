@@ -11,12 +11,18 @@ use Symfony\Component\Console\Command\Command;
  */
 final class ContainerCommandLoader extends AbstractContainerCommandLoader
 {
-    public function has(string $name): bool
+    /**
+     * @param string $name
+     */
+    public function has($name)
     {
         return $this->hasCommand($name);
     }
 
-    public function get(string $name): Command
+    /**
+     * @param string $name
+     */
+    public function get($name)
     {
         return $this->getCommand($name);
     }

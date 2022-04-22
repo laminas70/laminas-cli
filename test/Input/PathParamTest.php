@@ -22,21 +22,28 @@ class PathParamTest extends TestCase
     /** @var PathParam */
     private $param;
 
-    public function setUp(): void
+    /**
+     * @return void
+     */
+    public function setUp()
     {
         $this->param = new PathParam('test', PathParam::TYPE_FILE);
         $this->param->setDescription('Selected path');
     }
 
-    public function testUsesValueRequiredOptionMode(): void
+    /**
+     * @return void
+     */
+    public function testUsesValueRequiredOptionMode()
     {
         $this->assertSame(InputOption::VALUE_REQUIRED, $this->param->getOptionMode());
     }
 
     /**
      * @psalm-return iterable<non-empty-string,array{0:?string,1:string}>
+     * @return mixed[]
      */
-    public function defaultValues(): iterable
+    public function defaultValues()
     {
         $question = '<question>Selected path:</question>';
         $suffix   = PHP_EOL . ' > ';
@@ -47,97 +54,127 @@ class PathParamTest extends TestCase
 
     /**
      * @dataProvider defaultValues
+     * @param string|null $default
+     * @param string $expectedQuestionText
+     * @return void
      */
     public function testCreatesStandardQuestionUsingDefaultValue(
-        ?string $default,
-        string $expectedQuestionText
-    ): void {
+        $default,
+        $expectedQuestionText
+    ) {
         $this->param->setDefault($default);
         $question = $this->param->getQuestion();
         $this->assertEquals($expectedQuestionText, $question->getQuestion());
     }
 
-    public function testQuestionContainsAnAutocompleter(): void
+    /**
+     * @return void
+     */
+    public function testQuestionContainsAnAutocompleter()
     {
         $this->param->setDefault('path');
         $question = $this->param->getQuestion();
-        $this->assertIsCallable($question->getAutocompleterCallback());
+        $this->assertTrue(is_callable($question->getAutocompleterCallback()));
     }
 
-    public function testQuestionContainsAValidator(): void
+    /**
+     * @return void
+     */
+    public function testQuestionContainsAValidator()
     {
         $this->param->setDefault('path');
         $question = $this->param->getQuestion();
-        $this->assertIsCallable($question->getValidator());
+        $this->assertTrue(is_callable($question->getValidator()));
     }
 
-    public function testValidatorRaisesExceptionIfValueIsNullAndRequired(): void
+    /**
+     * @return void
+     */
+    public function testValidatorRaisesExceptionIfValueIsNullAndRequired()
     {
         $this->param->setRequiredFlag(true);
         $validator = $this->param->getQuestion()->getValidator();
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid value: string expected');
         $validator(null);
     }
 
-    public function testValidatorReturnsValueVerbatimIfDoesNotExistAndAllowedNotToExist(): void
+    /**
+     * @return void
+     */
+    public function testValidatorReturnsValueVerbatimIfDoesNotExistAndAllowedNotToExist()
     {
         $validator = $this->param->getQuestion()->getValidator();
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
         $this->assertSame('path-that-does-not-exist', $validator('path-that-does-not-exist'));
     }
 
-    public function testValidatorRaisesExceptionIfValueIsNonExistentPathAndMustExist(): void
+    /**
+     * @return void
+     */
+    public function testValidatorRaisesExceptionIfValueIsNonExistentPathAndMustExist()
     {
         $this->param->setPathMustExist(true);
         $validator = $this->param->getQuestion()->getValidator();
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Path does not exist');
         $validator('path-that-does-not-exist');
     }
 
-    public function testValidatorRaisesExceptionIfFileExistsButMustBeADirectory(): void
+    /**
+     * @return void
+     */
+    public function testValidatorRaisesExceptionIfFileExistsButMustBeADirectory()
     {
         $param = new PathParam('test', PathParam::TYPE_DIR);
         $param->setPathMustExist(true);
         $validator = $param->getQuestion()->getValidator();
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Path is not a valid directory');
         $validator(__FILE__);
     }
 
-    public function testValidatorReturnsValueVerbatimIfFileExists(): void
+    /**
+     * @return void
+     */
+    public function testValidatorReturnsValueVerbatimIfFileExists()
     {
         $this->param->setPathMustExist(true);
         $validator = $this->param->getQuestion()->getValidator();
 
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable(($validator)));
         $this->assertSame(__FILE__, $validator(__FILE__));
     }
 
-    public function testValidatorReturnsValueVerbatimIfDirExists(): void
+    /**
+     * @return void
+     */
+    public function testValidatorReturnsValueVerbatimIfDirExists()
     {
         $param = new PathParam('test', PathParam::TYPE_DIR);
         $param->setPathMustExist(true);
         $validator = $param->getQuestion()->getValidator();
 
-        $this->assertIsCallable($validator);
+        $this->assertTrue(is_callable($validator));
         $this->assertSame(__DIR__, $validator(__DIR__));
     }
 
-    public function testAutocompleterReturnsFilesAndDirectoriesBasedOnProvidedInput(): void
+    /**
+     * @return void
+     */
+    public function testAutocompleterReturnsFilesAndDirectoriesBasedOnProvidedInput()
     {
         $autocompleter = $this->param->getQuestion()->getAutocompleterCallback();
-        $this->assertIsCallable($autocompleter);
+        $this->assertTrue(is_callable($autocompleter));
 
         $paths = $autocompleter(__DIR__);
-        $this->assertIsArray($paths);
+        $this->assertTrue(is_array($paths));
         $this->assertGreaterThan(0, count($paths));
 
         $actual = array_reduce($paths, function (bool $isValid, string $path) {
@@ -147,54 +184,69 @@ class PathParamTest extends TestCase
         $this->assertTrue($actual, 'One or more autocompletion paths were invalid');
     }
 
-    public function testConstructorRaisesExceptionForInvalidTypeValue(): void
+    /**
+     * @return void
+     */
+    public function testConstructorRaisesExceptionForInvalidTypeValue()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid type provided');
         new PathParam('test', 'not-a-valid-type');
     }
 
-    public function testQuestionCreatedDoesNotIndicateMultiPromptByDefault(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedDoesNotIndicateMultiPromptByDefault()
     {
         $question = $this->param->getQuestion();
-        self::assertStringNotContainsString(
+        self::assertNotContains(
             'Multiple entries allowed',
             $question->getQuestion()
         );
     }
 
     // phpcs:ignore Generic.Files.LineLength.TooLong
-    public function testQuestionCreatedIncludesMultiPromptButNotRequiredPromptWhenValueAllowsMultipleButNotRequired(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedIncludesMultiPromptButNotRequiredPromptWhenValueAllowsMultipleButNotRequired()
     {
         $this->param->setAllowMultipleFlag(true);
         $this->param->setRequiredFlag(false);
         $question = $this->param->getQuestion();
-        self::assertStringContainsString(
+        self::assertContains(
             'Multiple entries allowed',
             $question->getQuestion()
         );
-        self::assertStringNotContainsString(
+        self::assertNotContains(
             'At least one entry is required. ',
             $question->getQuestion()
         );
     }
 
-    public function testQuestionCreatedIncludesMultiPromptAndRequiredPromptWhenValueAllowsMultipleAndIsRequired(): void
+    /**
+     * @return void
+     */
+    public function testQuestionCreatedIncludesMultiPromptAndRequiredPromptWhenValueAllowsMultipleAndIsRequired()
     {
         $this->param->setAllowMultipleFlag(true);
         $this->param->setRequiredFlag(true);
         $question = $this->param->getQuestion();
-        self::assertStringContainsString(
+        self::assertContains(
             'Multiple entries allowed',
             $question->getQuestion()
         );
-        self::assertStringContainsString(
+        self::assertContains(
             'At least one entry is required. ',
             $question->getQuestion()
         );
     }
 
-    public function testCallingSetAllowMultipleWithBooleanFalseAfterPreviouslyCallingItWithTrueRemovesOptionFlag(): void
+    /**
+     * @return void
+     */
+    public function testCallingSetAllowMultipleWithBooleanFalseAfterPreviouslyCallingItWithTrueRemovesOptionFlag()
     {
         $this->param->setAllowMultipleFlag(true);
         self::assertSame(InputOption::VALUE_IS_ARRAY, $this->param->getOptionMode() & InputOption::VALUE_IS_ARRAY);

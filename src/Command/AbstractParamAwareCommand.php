@@ -35,8 +35,9 @@ abstract class AbstractParamAwareCommand extends Command
     /**
      * @return $this
      * @throws RuntimeException
+     * @param \Laminas\Cli\Input\InputParamInterface $param
      */
-    final public function addParam(InputParamInterface $param): self
+    final public function addParam($param): self
     {
         $name = $param->getName();
 
@@ -62,8 +63,10 @@ abstract class AbstractParamAwareCommand extends Command
      * using input parameters.
      *
      * {@inheritDoc}
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
-    public function run(InputInterface $input, OutputInterface $output): int
+    public function run($input, $output): int
     {
         return parent::run(
             $this->decorateInputToBeParamAware($input, $output),
@@ -78,10 +81,12 @@ abstract class AbstractParamAwareCommand extends Command
      * ParamAwareInputInterface. If it already is, it will be returned verbatim;
      * otherwise, it is decorated in an instance appropriate to the
      * symfony/console version currently in use.
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
     final protected function decorateInputToBeParamAware(
-        InputInterface $input,
-        OutputInterface $output
+        $input,
+        $output
     ): ParamAwareInputInterface {
         if ($input instanceof ParamAwareInputInterface) {
             return $input;

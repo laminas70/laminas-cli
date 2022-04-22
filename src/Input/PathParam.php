@@ -22,8 +22,8 @@ final class PathParam extends AbstractInputParam
     use AllowMultipleTrait;
     use StandardQuestionTrait;
 
-    public const TYPE_DIR  = 'dir';
-    public const TYPE_FILE = 'file';
+    const TYPE_DIR  = 'dir';
+    const TYPE_FILE = 'file';
 
     /**
      * Whether or not the path provided must exist.
@@ -93,13 +93,19 @@ final class PathParam extends AbstractInputParam
         return $question;
     }
 
-    public function setPathMustExist(bool $flag): self
+    /**
+     * @param bool $flag
+     */
+    public function setPathMustExist($flag): self
     {
         $this->mustExist = $flag;
         return $this;
     }
 
-    private function setPathType(string $type): void
+    /**
+     * @return void
+     */
+    private function setPathType(string $type)
     {
         if (! in_array($type, [self::TYPE_DIR, self::TYPE_FILE], true)) {
             throw new InvalidArgumentException(sprintf(

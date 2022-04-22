@@ -24,7 +24,10 @@ class ExampleCommandWithDependencies extends Command
         parent::__construct();
     }
 
-    protected function configure(): void
+    /**
+     * @return void
+     */
+    protected function configure()
     {
         $this->setDescription('Test command with dependencies');
         $this->setHelp('Execute a test command that includes dependencies');
@@ -37,7 +40,11 @@ class ExampleCommandWithDependencies extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    protected function execute($input, $output): int
     {
         return 0;
     }

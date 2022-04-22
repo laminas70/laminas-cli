@@ -1,6 +1,7 @@
-# laminas-cli
+# PHP 7.0 support for: laminas-cli
 
-[![Build Status](https://github.com/laminas/laminas-cli/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/laminas/laminas-cli/actions/workflows/continuous-integration.yml)
+[![Build Status](https://github.com/laminas70/laminas-cli/actions/workflows/continuous-integration.yml/badge.svg)]
+(https://github.com/laminas/laminas-cli/actions/workflows/continuous-integration.yml)
 
 > ## 🇷🇺 Русским гражданам
 > 
@@ -27,7 +28,7 @@ Command-line interface for Laminas projects
 Install the library using [Composer](https://getcomposer.org):
 
 ```bash
-$ composer require laminas/laminas-cli
+$ composer require laminas70/laminas-cli
 ```
 
 ## Usage
