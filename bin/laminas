@@ -43,7 +43,10 @@ try {
 try {
     $container = (new ContainerResolver($projectRoot))->resolve($input);
     $app = (new ApplicationProvisioner())($app, $container);
-} catch (RuntimeException | InvalidArgumentException $exception) {
+} catch (RuntimeException $exception) {
+    // Usage information provided by the `ContainerResolver` should be passed to the CLI output
+    $containerNotFoundMessage = sprintf('<error>%s</error>', $exception->getMessage());
+} catch (InvalidArgumentException $exception) {
     // Usage information provided by the `ContainerResolver` should be passed to the CLI output
     $containerNotFoundMessage = sprintf('<error>%s</error>', $exception->getMessage());
 }
